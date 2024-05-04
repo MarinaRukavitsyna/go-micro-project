@@ -49,4 +49,4 @@ start: build_front
 stop:
 	@echo "Stopping front end..."
 	@-pkill -SIGTERM -f "./${FRONT_END_BINARY}"
-	@echo "Stopped front end!"
+	@echo "Stopped front end!"make

@@ -12,12 +12,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-
-
 const (
-	webPort = "80"
-	rpcPort = "5001"
-	mongoURL = "mongodb://mongo:27017"
+	webPort  = "80"
+	rpcPort  = "5001"
+	mongoURL = "mongodb://localhost:27017"
 	gRpcPort = "50001"
 )
 
@@ -44,20 +42,29 @@ func main() {
 		if err = client.Disconnect(ctx); err != nil {
 			panic(err)
 		}
-	} ()
+	}()
 
 	app := Config{
 		Models: data.New(client),
 	}
 
 	// start web server
-	go app.serve()
+	// go app.serve()
+	srv := &http.Server{
+		Addr:    fmt.Sprintf(":%s", webPort),
+		Handler: app.routes(),
+	}
+
+	err = srv.ListenAndServe()
+	if err != nil {
+		log.Panic()
+	}
 
 }
 
 func (app *Config) serve() {
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%s", webPort),
+		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
 
